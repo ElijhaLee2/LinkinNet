@@ -14,7 +14,6 @@ class Generator():
             # self.merge = tf.summary.merge(tf.get_collection(tf.GraphKeys.SUMMARIES,scope=scope))
             tf.summary.text('caption', caption)
             self.summaries = tf.get_collection(tf.GraphKeys.SUMMARIES, scope=scope)
-        pass
 
     def _build(self, embedding, name, reuse):
         z_dim = GENERATOR_HP['z_dim']
