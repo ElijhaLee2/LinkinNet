@@ -29,7 +29,7 @@ def rms(tensor_list):
 
 
 def optimize_loss(loss, global_step, learning_rate, optimizer, variables):
-    '''
+    """
     Summary:
         0.global:
             gradient rms: scalar
@@ -37,7 +37,7 @@ def optimize_loss(loss, global_step, learning_rate, optimizer, variables):
         2. gradients:
             2.1 gradient rms: scalar
             2.2 gradient: histogram
-    '''
+    """
     optmzr = optimizer(learning_rate)
 
     # Compute gradients.
@@ -57,9 +57,8 @@ def optimize_loss(loss, global_step, learning_rate, optimizer, variables):
         # Add summary for variables(histogram)
         tf.summary.histogram("parameters/%s" % var_name, variable)
         # Add summary for gradients(scalar, histogram)
-        tf.summary.scalar("gradient_rms/%s" % var_name,rms([grad_values]))
+        tf.summary.scalar("gradient_rms/%s" % var_name, rms([grad_values]))
         tf.summary.histogram("gradients/%s" % var_name, grad_values)
-
 
     grad_updates = optmzr.apply_gradients(
         gradients,
@@ -69,10 +68,10 @@ def optimize_loss(loss, global_step, learning_rate, optimizer, variables):
 
 
 def backup_model_file(backup_dir):
-    shutil.copytree('./model',os.path.join(backup_dir,'model'))
-    os.makedirs(os.path.join(backup_dir, 'other'),exist_ok=True)
-    shutil.copy('./other/hyperparameter.py', os.path.join(backup_dir,'other', 'hyperparameter.py'))
-    shutil.copy('./other/config.py', os.path.join(backup_dir,'other', 'config.py'))
+    shutil.copytree('./model', os.path.join(backup_dir, 'model'))
+    os.makedirs(os.path.join(backup_dir, 'other'), exist_ok=True)
+    shutil.copy('./other/hyperparameter.py', os.path.join(backup_dir, 'other', 'hyperparameter.py'))
+    shutil.copy('./other/config.py', os.path.join(backup_dir, 'other', 'config.py'))
     shutil.copy('./train.py', os.path.join(backup_dir, 'train.py'))
 
 

@@ -4,7 +4,7 @@ from other.hyperparameter import GENERATOR_HP
 from other.config import BATCH_SIZE, N_CLASS
 
 
-class Generator():
+class Generator:
     def __init__(self, embedding, caption, name, reuse=False):
         with tf.name_scope(name) as scope:
             self.generated_pic = self._build(embedding, name, reuse)

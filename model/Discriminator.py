@@ -1,7 +1,8 @@
 import tensorflow as tf
 import tensorflow.contrib.layers as ly
-from other.config import BATCH_SIZE, DISCRIMINATOR_IMG_NAME
+from other.config import BATCH_SIZE
 from other.hyperparameter import DISCRIMINATOR_HP
+
 
 class Discriminator():
     def __init__(self, image_input, text_embedding, variable_scope_name, additional_name: str, reuse=False):
@@ -37,7 +38,7 @@ class Discriminator():
 
         with tf.variable_scope(variable_scope_name, reuse=reuse):
             # 64, 3/N_CLASS
-            net = ly.conv2d(image_input, base_channel*2 , kernel_size, stride,
+            net = ly.conv2d(image_input, base_channel * 2, kernel_size, stride,
                             activation_fn=activation_fn, normalizer_fn=None, scope='img_0_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
             # 32, 64
@@ -52,8 +53,8 @@ class Discriminator():
 
             # Embedding
             # 1, 1024
-            expand_embedding = tf.expand_dims(text_embedding,1)
-            expand_embedding = tf.expand_dims(expand_embedding,2)
+            expand_embedding = tf.expand_dims(text_embedding, 1)
+            expand_embedding = tf.expand_dims(expand_embedding, 2)
             emb = ly.conv2d_transpose(expand_embedding, 256, 2, 2, activation_fn=activation_fn,
                                       normalizer_fn=normalizer_fn, scope='emb_0_deconv',
                                       weights_initializer=weights_initializer, biases_initializer=biases_initializer)
@@ -75,7 +76,7 @@ class Discriminator():
                             activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='3_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
             # 4, 512
-            reshape = tf.reshape(net,[BATCH_SIZE, 4*4*512])
+            reshape = tf.reshape(net, [BATCH_SIZE, 4 * 4 * 512])
             # 4*4*512
             score = ly.fully_connected(reshape, 1,
                                        activation_fn=None, normalizer_fn=None, scope='4_fc',

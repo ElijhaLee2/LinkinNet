@@ -1,8 +1,8 @@
 import tensorflow as tf
 from model.Generator import Generator
 from model.Discriminator import Discriminator
-from model.Optimizer import GeneratorOptimizer, DiscriminatorOptimizer, MatchNetOptimizer
-from other.config import MATCHNET_IMG_NAME, MATCHNET_SEG_NAME, GENERATOR_NAME, DISCRIMINATOR_IMG_NAME, \
+from model.Optimizer import GeneratorOptimizer, DiscriminatorOptimizer
+from other.config import GENERATOR_NAME, DISCRIMINATOR_IMG_NAME, \
     DISCRIMINATOR_SEG_NAME, OPTIMIZER_DIS_IMG_NAME, OPTIMIZER_DIS_SEG_NAME, OPTIMIZER_GEN_NAME, BATCH_SIZE
 
 
@@ -22,11 +22,11 @@ def build_whole_graph(batch):
 
     # Pack models
     models = {
-        GENERATOR_NAME: generator,
-        DISCRIMINATOR_SEG_NAME + '_real': discriminator_seg_real,
-        DISCRIMINATOR_SEG_NAME + '_fake': discriminator_seg_fake,
-        DISCRIMINATOR_SEG_NAME + '_wrong': discriminator_seg_wrong,
-        DISCRIMINATOR_SEG_NAME + '_penalty': discriminator_seg_penalty,
+        'STACK_0': {GENERATOR_NAME: generator,
+                    DISCRIMINATOR_SEG_NAME + '_real': discriminator_seg_real,
+                    DISCRIMINATOR_SEG_NAME + '_fake': discriminator_seg_fake,
+                    DISCRIMINATOR_SEG_NAME + '_wrong': discriminator_seg_wrong,
+                    DISCRIMINATOR_SEG_NAME + '_penalty': discriminator_seg_penalty, }
     }
 
     # Optimizer

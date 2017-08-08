@@ -14,15 +14,13 @@ RESTORE_PATH = None
 MATCHNET_IMG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/img/'
 MATCHNET_SEG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/seg/'
 
-# Names
-MATCHNET_IMG_NAME = 'img_emb_net'
-MATCHNET_SEG_NAME = 'seg_emb_net'
-DISCRIMINATOR_IMG_NAME = 'dis_img'
-DISCRIMINATOR_SEG_NAME = 'dis_seg'
-GENERATOR_NAME = 'gen'
-OPTIMIZER_GEN_NAME = 'optmzr_gen'
-OPTIMIZER_DIS_IMG_NAME = 'optmzr_dis_img'
-OPTIMIZER_DIS_SEG_NAME = 'optmzr_dis_seg'
+# # Names
+# DISCRIMINATOR_IMG_NAME = 'dis_img'
+# DISCRIMINATOR_SEG_NAME = 'dis_seg'
+# GENERATOR_NAME = 'gen'
+# OPTIMIZER_GEN_NAME = 'optmzr_gen'
+# OPTIMIZER_DIS_IMG_NAME = 'optmzr_dis_img'
+# OPTIMIZER_DIS_SEG_NAME = 'optmzr_dis_seg'
 
 
 BATCH_SIZE = 32
