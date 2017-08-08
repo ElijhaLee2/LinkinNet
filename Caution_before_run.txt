@@ -1,0 +1,18 @@
+----Caution before run----
+config:
+CUDA_VISIBLE_DEVICES
+IS_DEBUG
+RESTORE_PATH
+
+
+train:
+work_dir
+
+
+----Change network structure----
+Optimizer:
+losses
+
+train:
+restore
+train_xxx (in session)
