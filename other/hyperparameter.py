@@ -8,6 +8,10 @@ OPTIMIZER_DIS_HP = {'learning_rate': 0.0002,
                     'lambda': 8,  # coefficient when compute gradient penalty, only for Dis optmzr
                     }
 
+OPTIMIZER_GEN_HP = {'learning_rate': 0.0002,
+                    'optimizer': tf.train.AdamOptimizer,
+                    }
+
 # Generator hyper parameters
 GENERATOR_HP = {'z_dim': 128,
                 'base_channel': 32,

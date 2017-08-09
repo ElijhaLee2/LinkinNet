@@ -428,3 +428,5 @@ class COCO:
         m = maskUtils.decode(rle)
         return m
 
+if __name__ == '__main__':
+    pass

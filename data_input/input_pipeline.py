@@ -1,23 +1,26 @@
 import os
+from pycocotools.coco import COCO
 
 import tensorflow as tf
-from data_input.read_hdf5 import read_hdf5
-from other.data_path import IMG_PATH, SEG_PATH, HDF5_PATH, JSON_PATH
+from data_input.read_data import read_cat_datas
+from other.data_path import IMG_PATH, SEG_PATH, HDF5_PATH, CAP_PATH, INSTANCES_PATH
 from other.config import IMG_SIZE, BATCH_SIZE, IS_DEBUG,N_CLASS
 
 
-def get_input_tensors(hdf5_path=HDF5_PATH, ann_path = JSON_PATH, image_root=IMG_PATH, seg_root=SEG_PATH, image_size=IMG_SIZE, is_debug=IS_DEBUG, batch_size=BATCH_SIZE):
+def get_input_tensors(hdf5_path=HDF5_PATH, ann_path = CAP_PATH, image_root=IMG_PATH, seg_root=SEG_PATH, image_size=IMG_SIZE, is_debug=IS_DEBUG, batch_size=BATCH_SIZE):
     print('Start reading training data...')
+
+    coco = COCO(INSTANCES_PATH)
     # 1.得到image_name_list和embedding_tensor_list(每个embedding_tensor有5个embedding)
-    name_list, embedding_list, caption_list = read_hdf5(hdf5_path,ann_path,is_debug)
+    name_list, embedding_list, caption_list = read_cat_datas(coco, supNms=['person'])
     length = len(name_list)
 
     # 2. embedding
     embedding_tensor = tf.convert_to_tensor(embedding_list)
     caption_tensor = tf.convert_to_tensor(caption_list)
-    [embedding_slice, caption_slice] = tf.train.slice_input_producer([embedding_tensor, caption_tensor],shuffle=False)
+    [embedding_slice, caption_slice] = tf.train.slice_input_producer([embedding_tensor, caption_tensor],shuffle=False,capacity=BATCH_SIZE*4)
     # Produce wrong embedding
-    [wrong_embedding_slice] = tf.train.slice_input_producer([embedding_tensor],shuffle=True)
+    [wrong_embedding_slice] = tf.train.slice_input_producer([embedding_tensor],shuffle=True,capacity=BATCH_SIZE*4)
 
     # def is_emb_same(embedding_slice,wrong_embedding_slice):
     #     return tf.equal(embedding_slice,wrong_embedding_slice)

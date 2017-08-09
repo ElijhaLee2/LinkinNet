@@ -26,33 +26,32 @@ class Generator:
         with tf.variable_scope(name, reuse=reuse) as scope:
             z = tf.random_normal([BATCH_SIZE, z_dim])
             input = tf.concat([z, embedding], axis=1)
-            net = ly.fully_connected(input, 4 * 4 * base_channel * 16, activation_fn, normalizer_fn=None,
+            net = ly.fully_connected(input, 2 * 2 * base_channel * 16, activation_fn, normalizer_fn=None,
                                      weights_initializer=weights_initializer, scope='z_emb_fc')
-            net = tf.reshape(net, [BATCH_SIZE, 4, 4, base_channel * 16])
-            # 4, 512
+            net = tf.reshape(net, [BATCH_SIZE, 2, 2, base_channel * 16])
+            # 2, 512
             net = ly.conv2d_transpose(net, base_channel * 8, kernel_size, stride,
                                       activation_fn=activation_fn, normalizer_fn=normalizer_fn,
                                       weights_initializer=weights_initializer, scope='0_deconv')
-            # 8, 256
+            # 4, 256
             net = ly.conv2d_transpose(net, base_channel * 4, kernel_size, stride,
                                       activation_fn=activation_fn, normalizer_fn=normalizer_fn,
                                       weights_initializer=weights_initializer, scope='1_deconv')
-            # 16, 128
+            # 8, 128
             net = ly.conv2d_transpose(net, base_channel * 2, kernel_size, stride,
                                       activation_fn=activation_fn, normalizer_fn=normalizer_fn,
                                       weights_initializer=weights_initializer, scope='2_deconv')
+            # 16, 64
+            net = ly.conv2d_transpose(net, base_channel * 2, kernel_size, stride,
+                                      activation_fn=activation_fn, normalizer_fn=normalizer_fn,
+                                      weights_initializer=weights_initializer, scope='3_deconv')
             # 32, 64
 
             #  segmentation
-            # 32, 64
             net = ly.conv2d_transpose(net, N_CLASS, kernel_size, stride,
-                                       activation_fn=activation_fn, normalizer_fn=None,
-                                       weights_initializer=weights_initializer, scope='3_net2_deconv')
+                                      activation_fn=activation_fn, normalizer_fn=None,
+                                      weights_initializer=weights_initializer, scope='4_net2_deconv')
             # 64, N_CLASS
-            # net2 = ly.conv2d_transpose(net2, N_CLASS, kernel_size, stride,
-            #                           activation_fn=None, normalizer_fn=None,
-            #                           weights_initializer=weights_initializer,  scope='4_net2_deconv')
-            # # 128, N_CLASS
             net = tf.nn.softmax(net)
 
             return net

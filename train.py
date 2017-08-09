@@ -42,8 +42,6 @@ backup_model_file(backup_dir)
 
 # File writer % Saver
 file_writer = tf.summary.FileWriter(logdir=log_dir, graph=sess.graph, flush_secs=30)
-saver_matchnet_img = tf.train.Saver(var_list=models[MATCHNET_IMG_NAME].model_variables)
-saver_matchnet_seg = tf.train.Saver(var_list=models[MATCHNET_SEG_NAME].model_variables)
 
 gan_var_list = []
 for mod in models.values():
@@ -70,13 +68,6 @@ else:
     global_step = int(cp.split('-')[-1])
     epoch_done = global_step // length
     epoch_total = TOTAL_EPOCH
-
-# restore MatchNet params
-if MATCHNET_ADDED:
-    save_img_path = tf.train.latest_checkpoint(MATCHNET_IMG_SAVE_PATH)
-    saver_matchnet_img.restore(sess, save_img_path)
-    save_seg_path = tf.train.latest_checkpoint(MATCHNET_SEG_SAVE_PATH)
-    saver_matchnet_seg.restore(sess, save_seg_path)
 
 # Start runners
 coord = tf.train.Coordinator()
