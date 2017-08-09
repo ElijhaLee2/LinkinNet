@@ -14,15 +14,16 @@ OPTIMIZER_GEN_HP = {'learning_rate': 0.0002,
 
 # Generator hyper parameters
 GENERATOR_HP = {'z_dim': 128,
-                'base_channel': 32,
+                'base_channel': 64,
                 'kernel_size': 3,
                 'stride': 2,
                 'activation_fn': leaky_relu,
-                'normalizer_fn': ly.batch_norm,
+                # 'normalizer_fn': ly.batch_norm,
+                'normalizer_fn': None,
                 'weights_initializer': tf.truncated_normal_initializer(stddev=0.01)}
 
 # Discriminator hyper parameters
-DISCRIMINATOR_HP = {'base_channel': 32,
+DISCRIMINATOR_HP = {'base_channel': 64,
                     'kernel_size': 3,
                     'stride': 2,
                     'activation_fn': leaky_relu,

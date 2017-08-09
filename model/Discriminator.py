@@ -4,7 +4,7 @@ from other.config import BATCH_SIZE
 from other.hyperparameter import DISCRIMINATOR_HP
 
 
-class Discriminator():
+class Discriminator:
     def __init__(self, image_input, text_embedding, variable_scope_name, additional_name: str, reuse=False):
         full_name = variable_scope_name + '_' + additional_name
         with tf.name_scope(full_name) as scope:
@@ -41,22 +41,22 @@ class Discriminator():
             net = ly.conv2d(image_input, base_channel, kernel_size, stride,
                             activation_fn=activation_fn, normalizer_fn=None, scope='0_img_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 32, 32
+            # 32, 64
             net = ly.conv2d(net, base_channel * 2, kernel_size, stride,
                             activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='1_img_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 16, 64
+            # 16, 128
             net = ly.conv2d(net, base_channel * 4, kernel_size, stride,
                             activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='2_img_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 8, 128
+            # 8, 256
 
             net = ly.conv2d(net, base_channel * 8, kernel_size, stride,
                             activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='3_img_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 4, 256
+            # 4, 512
 
-            # Embedding
+            # Embedding: 4,256
             reduced_emb = ly.fully_connected(text_embedding, 256, activation_fn=activation_fn, normalizer_fn=None,
                                              weights_initializer=weights_initializer,
                                              biases_initializer=biases_initializer, scope='emb_fc')
@@ -67,7 +67,7 @@ class Discriminator():
             # Concat
             concat = tf.concat([net, reduced_emb], axis=3)
 
-            # 4, 512
+            # 4, 512+256
             net = ly.conv2d(net, base_channel * 16, kernel_size, stride,
                             activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='4_concat_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
@@ -85,6 +85,6 @@ class Discriminator():
 
 # TEST
 if __name__ == '__main__':
-    img = tf.placeholder(tf.float32,[32,64,64,3])
-    emb = tf.placeholder(tf.float32,[32,1024])
-    g = Discriminator(img,emb,'d','real')
+    img = tf.placeholder(tf.float32, [32, 64, 64, 3])
+    emb = tf.placeholder(tf.float32, [32, 1024])
+    g = Discriminator(img, emb, 'd', 'real')
