@@ -2,7 +2,7 @@ import os
 from pycocotools.coco import COCO
 
 import tensorflow as tf
-from data_input.read_data import read_cat_datas
+from data_input.read_data import read_cat_data
 from other.data_path import IMG_PATH, SEG_PATH, HDF5_PATH, CAP_PATH, INSTANCES_PATH
 from other.config import IMG_SIZE, BATCH_SIZE, IS_DEBUG, N_CAT,CAT_NMS
 
@@ -13,7 +13,7 @@ def get_input_tensors(image_root=IMG_PATH, seg_root=SEG_PATH,
 
     coco = COCO(INSTANCES_PATH)
     # 1.得到image_name_list和embedding_tensor_list(每个embedding_tensor有5个embedding)
-    name_list, embedding_list, caption_list = read_cat_datas(coco, catNms=CAT_NMS)
+    name_list, embedding_list, caption_list = read_cat_data(coco, catNms=CAT_NMS)
     length = len(name_list)
 
     # 2. embedding

@@ -19,17 +19,6 @@ def read_captions(json_path):
 
 
 def read_hdf5(hdf5_path):
-    # h = h5py.File(hdf5_path)
-    #
-    # cnt = 0
-    # name_emb = {}
-    # print('Start reading hdf5:...')
-    # for hh in h.items():
-    #     name_emb[hh[0]] = np.array(hh[1])[0:5]
-    #     cnt += 1
-    #     if cnt % 10000 == 0:
-    #         print(cnt)
-
     return h5py.File(hdf5_path)
 
 
@@ -37,7 +26,7 @@ def imgNmToEmb(h5pyView):
     return np.array(h5pyView)
 
 
-def read_cat_datas(coco, catNms=[], supNms=[]):
+def read_cat_data(coco, catNms=[], supNms=[]):
     """
     :param cat: cat to read. if [], all cat will be read.
     :return: a list, each element of which is [img_name, seg_name, emb, cap]
@@ -79,6 +68,6 @@ def read_cat_datas(coco, catNms=[], supNms=[]):
 
 if __name__ == '__main__':
     coco = COCO(INSTANCES_PATH)
-    res = read_cat_datas(coco, catNms=CAT_NMS)
+    res = read_cat_data(coco, catNms=CAT_NMS)
     print(len(res))
 
