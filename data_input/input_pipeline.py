@@ -4,16 +4,16 @@ from pycocotools.coco import COCO
 import tensorflow as tf
 from data_input.read_data import read_cat_datas
 from other.data_path import IMG_PATH, SEG_PATH, HDF5_PATH, CAP_PATH, INSTANCES_PATH
-from other.config import IMG_SIZE, BATCH_SIZE, IS_DEBUG, N_CLASS
+from other.config import IMG_SIZE, BATCH_SIZE, IS_DEBUG, N_CAT,CAT_NMS
 
 
-def get_input_tensors(hdf5_path=HDF5_PATH, ann_path=CAP_PATH, image_root=IMG_PATH, seg_root=SEG_PATH,
-                      image_size=IMG_SIZE, is_debug=IS_DEBUG, batch_size=BATCH_SIZE):
+def get_input_tensors(image_root=IMG_PATH, seg_root=SEG_PATH,
+                      image_size=IMG_SIZE, batch_size=BATCH_SIZE):
     print('Start reading training data...')
 
     coco = COCO(INSTANCES_PATH)
     # 1.得到image_name_list和embedding_tensor_list(每个embedding_tensor有5个embedding)
-    name_list, embedding_list, caption_list = read_cat_datas(coco, supNms=['person'])
+    name_list, embedding_list, caption_list = read_cat_datas(coco, catNms=CAT_NMS)
     length = len(name_list)
 
     # 2. embedding
@@ -53,7 +53,7 @@ def get_input_tensors(hdf5_path=HDF5_PATH, ann_path=CAP_PATH, image_root=IMG_PAT
     seg = tf.one_hot(  # 把segmentation转化为one-hot形式
         tf.image.resize_images(tf.image.decode_jpeg(seg_v, channels=1), (image_size, image_size), method=1)[:, :, 0],
         # 必须保持像素值为整数
-        N_CLASS
+        N_CAT
     )
 
     # 4.

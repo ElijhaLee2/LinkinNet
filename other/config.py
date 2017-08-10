@@ -5,14 +5,14 @@ OPTIMIZER_SUMMARIES = [
     # "gradient_norm",
 ]
 
-CUDA_VISIBLE_DEVICES = '3'
+CUDA_VISIBLE_DEVICES = '9'
 
 RESTORE_PATH = None
 # RESTORE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/work_dir/train08-03_10-40-44/'
 
 # Path of MatchNet saved parameters
-MATCHNET_IMG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/img/'
-MATCHNET_SEG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/seg/'
+# MATCHNET_IMG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/img/'
+# MATCHNET_SEG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/seg/'
 
 # # Names
 # DISCRIMINATOR_IMG_NAME = 'dis_img'
@@ -24,7 +24,7 @@ MATCHNET_SEG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/seg/'
 
 
 BATCH_SIZE = 32
-IMG_SIZE = 256
+IMG_SIZE = 64
 
 # IS_DEBUG = True
 IS_DEBUG = False
@@ -39,8 +39,12 @@ SAVE_STEP = 100
 SAVE_STEP_EPOCH = 5
 TOTAL_EPOCH = 20
 
-# MSCOCO class number
-N_CLASS = 90
+# MSCOCO class
+N_CAT = 1
+CAT_NMS = ['cup']
+SUPCAT_NMS = []
+CLASS_NUM_LIST = [47]
+
 
 SEG_ADDED = True
 MATCHNET_ADDED = True

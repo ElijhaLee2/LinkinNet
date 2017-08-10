@@ -1,0 +1,31 @@
+
+func:
+    decodeMask - Decode binary mask M encoded via run-length encoding.
+    encodeMask - Encode binary mask M using run-length encoding.
+    ---------
+    getAnnIds  - Get ann ids that satisfy given filter conditions.
+    getCatIds(catNms=[], supNms=[], catIds=[]):  - Get cat ids that satisfy given filter conditions.
+        return all cat ids if all params are [], else return intersection of catNms, supNms, catIds.
+        the operation between elements of each param (list) is OR. :'[cat for cat in cats if cat['name'] in catNms]'
+    getImgIds(imgIds=[], catIds=[]):  - Get img ids that satisfy given filter conditions.
+        return all img ids if params are all[], else return intersection of imgIds and catIds.
+        the operation between elements of catIds is AND! : 'ids &= set(self.catToImgs[catId])'
+    ---------
+    loadAnns   - Load anns with the specified ids.
+    loadCats   - Load cats with the specified ids.
+    loadImgs   - Load imgs with the specified ids.
+    annToMask  - Convert segmentation in an annotation to binary mask.
+    showAnns   - Display the specified annotations.
+    loadRes    - Load algorithm results and create API for accessing them.
+    download   - Download COCO images from mscoco.org server.
+    # Throughout the API "ann"=annotation, "cat"=category, and "img"=image.
+
+var:
+    dataset
+    ---------
+    cats
+    imgs
+    anns
+    ---------
+    imgToAnns
+    catToImgs

@@ -1,20 +1,17 @@
 import tensorflow as tf
 from model.Trainer import Trainer
 from data_input.input_pipeline import get_input_tensors
-from other.config import SAVE_STEP, TOTAL_EPOCH, CUDA_VISIBLE_DEVICES, RESTORE_PATH, MATCHNET_IMG_NAME, \
-    MATCHNET_SEG_NAME, N_DIS, DISCRIMINATOR_IMG_NAME, DISCRIMINATOR_SEG_NAME, MATCHNET_IMG_SAVE_PATH, \
-    MATCHNET_SEG_SAVE_PATH, SAVE_STEP_EPOCH,DISPLAY_STEP,MATCHNET_ADDED
+from other.config import SAVE_STEP, TOTAL_EPOCH, CUDA_VISIBLE_DEVICES, RESTORE_PATH, \
+    N_DIS, SAVE_STEP_EPOCH, DISPLAY_STEP
 from other.function import backup_model_file, restore_model_file
 import os
 import time
 from model.Whole import build_whole_graph
-from tensorflow.python.framework.meta_graph import add_collection_def
-from tensorflow.python.summary.plugin_asset import get_plugin_asset
 
 os.environ['CUDA_VISIBLE_DEVICES'] = CUDA_VISIBLE_DEVICES
 
 # Get input tensors
-[img, seg, embedding, caption], length = get_input_tensors()
+batch, length = get_input_tensors()
 
 # Build network, Create optimizer
 # if RESTORE_PATH is not None:
@@ -23,7 +20,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = CUDA_VISIBLE_DEVICES
 #     restore_model_file(RESTORE_PATH)
 #     time.sleep(2)  # Wait previous restore file command valid
 
-models, optmzrs = build_whole_graph(img, seg, embedding, caption)
+models, optmzrs = build_whole_graph(batch)
 
 # Create session
 sess_config = tf.ConfigProto()
@@ -43,14 +40,8 @@ backup_model_file(backup_dir)
 # File writer % Saver
 file_writer = tf.summary.FileWriter(logdir=log_dir, graph=sess.graph, flush_secs=30)
 
-gan_var_list = []
-for mod in models.values():
-    gan_var_list += mod.model_variables
-for opt in optmzrs.values():
-    gan_var_list += opt.model_variables
-gan_var_list = list(set(gan_var_list) - set(models[MATCHNET_IMG_NAME].model_variables + models[MATCHNET_SEG_NAME].model_variables))
-saver_gan = tf.train.Saver(var_list=gan_var_list)
-saver_gan_epoch = tf.train.Saver(var_list=gan_var_list)
+saver_gan = tf.train.Saver()
+saver_gan_epoch = tf.train.Saver()
 
 # Initialization or restore
 if RESTORE_PATH is None:
@@ -85,7 +76,7 @@ try:
         n_dis = N_DIS[0 if global_step < 30 else 1]
         # train dis
         for i in range(n_dis):
-            train.train_dis(DISCRIMINATOR_IMG_NAME)
+            train.train_dis('dis_seg')
             # train.train_dis(DISCRIMINATOR_SEG_NAME)
 
         # train gen

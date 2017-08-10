@@ -1,7 +1,7 @@
 import tensorflow as tf
 import tensorflow.contrib.layers as ly
 from other.hyperparameter import GENERATOR_HP
-from other.config import BATCH_SIZE, N_CLASS
+from other.config import BATCH_SIZE, N_CAT
 
 
 class Generator:
@@ -56,7 +56,7 @@ class Generator:
             # 32, 64
 
             #  segmentation
-            net = ly.conv2d_transpose(net, N_CLASS, kernel_size, stride,
+            net = ly.conv2d_transpose(net, N_CAT, kernel_size, stride,
                                       activation_fn=activation_fn, normalizer_fn=None,
                                       weights_initializer=weights_initializer, scope='4_net2_deconv')
             # 64, N_CLASS
@@ -133,6 +133,6 @@ class Generator:
 if __name__ == '__main__':
     emb = tf.placeholder(tf.float32, shape=[BATCH_SIZE, 1024])
     cap = tf.placeholder(tf.string, shape=[BATCH_SIZE, 1])
-    seg = tf.placeholder(tf.float32, shape=[BATCH_SIZE,64,64,N_CLASS])
+    seg = tf.placeholder(tf.float32, shape=[BATCH_SIZE, 64, 64, N_CAT])
     g = Generator(emb, cap, 'g_img', seg=seg)
     print()

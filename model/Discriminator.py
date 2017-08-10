@@ -72,9 +72,9 @@ class Discriminator:
                             activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='4_concat_conv',
                             weights_initializer=weights_initializer, biases_initializer=biases_initializer)
 
-            # 2, 512
-            reshape = tf.reshape(net, [BATCH_SIZE, 2 * 2 * 512])
-            # 2*2*512
+            # 2, 1024
+            reshape = tf.reshape(net, [BATCH_SIZE, 2 * 2 * 1024])
+            # 2*2*1024
             score = ly.fully_connected(reshape, 1,
                                        activation_fn=None, normalizer_fn=None, scope='5_fc',
                                        weights_initializer=weights_initializer, biases_initializer=biases_initializer)
