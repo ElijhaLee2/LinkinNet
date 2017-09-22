@@ -1,0 +1,163 @@
+[{'id': 1, 'name': 'person', 'supercategory': 'person'},
+ {'id': 2, 'name': 'bicycle', 'supercategory': 'vehicle'},
+ {'id': 3, 'name': 'car', 'supercategory': 'vehicle'},
+ {'id': 4, 'name': 'motorcycle', 'supercategory': 'vehicle'},
+ {'id': 5, 'name': 'airplane', 'supercategory': 'vehicle'},
+ {'id': 6, 'name': 'bus', 'supercategory': 'vehicle'},
+ {'id': 7, 'name': 'train', 'supercategory': 'vehicle'},
+ {'id': 8, 'name': 'truck', 'supercategory': 'vehicle'},
+ {'id': 9, 'name': 'boat', 'supercategory': 'vehicle'},
+ {'id': 10, 'name': 'traffic light', 'supercategory': 'outdoor'},
+ {'id': 11, 'name': 'fire hydrant', 'supercategory': 'outdoor'},
+ {'id': 13, 'name': 'stop sign', 'supercategory': 'outdoor'},
+ {'id': 14, 'name': 'parking meter', 'supercategory': 'outdoor'},
+ {'id': 15, 'name': 'bench', 'supercategory': 'outdoor'},
+ {'id': 16, 'name': 'bird', 'supercategory': 'animal'},
+ {'id': 17, 'name': 'cat', 'supercategory': 'animal'},
+ {'id': 18, 'name': 'dog', 'supercategory': 'animal'},
+ {'id': 19, 'name': 'horse', 'supercategory': 'animal'},
+ {'id': 20, 'name': 'sheep', 'supercategory': 'animal'},
+ {'id': 21, 'name': 'cow', 'supercategory': 'animal'},
+ {'id': 22, 'name': 'elephant', 'supercategory': 'animal'},
+ {'id': 23, 'name': 'bear', 'supercategory': 'animal'},
+ {'id': 24, 'name': 'zebra', 'supercategory': 'animal'},
+ {'id': 25, 'name': 'giraffe', 'supercategory': 'animal'},
+ {'id': 27, 'name': 'backpack', 'supercategory': 'accessory'},
+ {'id': 28, 'name': 'umbrella', 'supercategory': 'accessory'},
+ {'id': 31, 'name': 'handbag', 'supercategory': 'accessory'},
+ {'id': 32, 'name': 'tie', 'supercategory': 'accessory'},
+ {'id': 33, 'name': 'suitcase', 'supercategory': 'accessory'},
+ {'id': 34, 'name': 'frisbee', 'supercategory': 'sports'},
+ {'id': 35, 'name': 'skis', 'supercategory': 'sports'},
+ {'id': 36, 'name': 'snowboard', 'supercategory': 'sports'},
+ {'id': 37, 'name': 'sports ball', 'supercategory': 'sports'},
+ {'id': 38, 'name': 'kite', 'supercategory': 'sports'},
+ {'id': 39, 'name': 'baseball bat', 'supercategory': 'sports'},
+ {'id': 40, 'name': 'baseball glove', 'supercategory': 'sports'},
+ {'id': 41, 'name': 'skateboard', 'supercategory': 'sports'},
+ {'id': 42, 'name': 'surfboard', 'supercategory': 'sports'},
+ {'id': 43, 'name': 'tennis racket', 'supercategory': 'sports'},
+ {'id': 44, 'name': 'bottle', 'supercategory': 'kitchen'},
+ {'id': 46, 'name': 'wine glass', 'supercategory': 'kitchen'},
+ {'id': 47, 'name': 'cup', 'supercategory': 'kitchen'},
+ {'id': 48, 'name': 'fork', 'supercategory': 'kitchen'},
+ {'id': 49, 'name': 'knife', 'supercategory': 'kitchen'},
+ {'id': 50, 'name': 'spoon', 'supercategory': 'kitchen'},
+ {'id': 51, 'name': 'bowl', 'supercategory': 'kitchen'},
+ {'id': 52, 'name': 'banana', 'supercategory': 'food'},
+ {'id': 53, 'name': 'apple', 'supercategory': 'food'},
+ {'id': 54, 'name': 'sandwich', 'supercategory': 'food'},
+ {'id': 55, 'name': 'orange', 'supercategory': 'food'},
+ {'id': 56, 'name': 'broccoli', 'supercategory': 'food'},
+ {'id': 57, 'name': 'carrot', 'supercategory': 'food'},
+ {'id': 58, 'name': 'hot dog', 'supercategory': 'food'},
+ {'id': 59, 'name': 'pizza', 'supercategory': 'food'},
+ {'id': 60, 'name': 'donut', 'supercategory': 'food'},
+ {'id': 61, 'name': 'cake', 'supercategory': 'food'},
+ {'id': 62, 'name': 'chair', 'supercategory': 'furniture'},
+ {'id': 63, 'name': 'couch', 'supercategory': 'furniture'},
+ {'id': 64, 'name': 'potted plant', 'supercategory': 'furniture'},
+ {'id': 65, 'name': 'bed', 'supercategory': 'furniture'},
+ {'id': 67, 'name': 'dining table', 'supercategory': 'furniture'},
+ {'id': 70, 'name': 'toilet', 'supercategory': 'furniture'},
+ {'id': 72, 'name': 'tv', 'supercategory': 'electronic'},
+ {'id': 73, 'name': 'laptop', 'supercategory': 'electronic'},
+ {'id': 74, 'name': 'mouse', 'supercategory': 'electronic'},
+ {'id': 75, 'name': 'remote', 'supercategory': 'electronic'},
+ {'id': 76, 'name': 'keyboard', 'supercategory': 'electronic'},
+ {'id': 77, 'name': 'cell phone', 'supercategory': 'electronic'},
+ {'id': 78, 'name': 'microwave', 'supercategory': 'appliance'},
+ {'id': 79, 'name': 'oven', 'supercategory': 'appliance'},
+ {'id': 80, 'name': 'toaster', 'supercategory': 'appliance'},
+ {'id': 81, 'name': 'sink', 'supercategory': 'appliance'},
+ {'id': 82, 'name': 'refrigerator', 'supercategory': 'appliance'},
+ {'id': 84, 'name': 'book', 'supercategory': 'indoor'},
+ {'id': 85, 'name': 'clock', 'supercategory': 'indoor'},
+ {'id': 86, 'name': 'vase', 'supercategory': 'indoor'},
+ {'id': 87, 'name': 'scissors', 'supercategory': 'indoor'},
+ {'id': 88, 'name': 'teddy bear', 'supercategory': 'indoor'},
+ {'id': 89, 'name': 'hair drier', 'supercategory': 'indoor'},
+ {'id': 90, 'name': 'toothbrush', 'supercategory': 'indoor'}]
+
+
+1       45174
+2       2287
+3       8606
+4       2442
+5       2243
+6       2791
+7       2464
+8       4321
+9       2098
+10      2893
+11      1205
+13      1214
+14      481
+15      3844
+16      2241
+17      2818
+
+
+19      2068
+20      1105
+21      1389
+22      1518
+23      668
+24      1324
+25      1798
+27      3924
+28      2749
+31      4861
+32      2667
+33      1631
+34      1511
+35      2209
+36      1170
+37      2986
+38      1625
+39      1804
+40      1884
+41      2511
+42      2343
+43      2368
+44      5968
+46      1771
+47      6518
+48      2537
+49      3097
+50      2493
+51      5028
+52      1618
+53      1171
+54      1645
+55      1216
+56      1340
+57      1186
+58      821
+59      2202
+60      1062
+61      2080
+62      8950
+63      3170
+64      3084
+65      2539
+67      8378
+70      2317
+72      3191
+73      2475
+74      1290
+75      2180
+76      1471
+77      3322
+78      1089
+79      2003
+80      151
+81      3291
+82      1671
+84      3734
+85      3159
+86      2530
+87      673
+88      1510
+89      128
+90      700

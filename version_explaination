@@ -1,0 +1,2 @@
+_1: add gp_rw
+_2: add condition "seg" in stack1_D (D's inputs: img, seg, emb)

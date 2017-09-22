@@ -1,0 +1,1 @@
+add segmentation to D's input
