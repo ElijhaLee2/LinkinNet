@@ -1,86 +1,93 @@
 import tensorflow as tf
-import tensorflow.contrib.layers as ly
-from other.config import BATCH_SIZE
-from other.hyperparameter import DISCRIMINATOR_HP
+
+from model.hyperparameter import DISCRIMINATOR_HP
+from other.function import tile, l2_norm_square
+from other.nn_func import conv, dense
 
 
 class Discriminator:
-    def __init__(self, image_input, text_embedding, variable_scope_name, additional_name: str, reuse=False):
+    def __init__(self, image_input, text_embedding, variable_scope_name: str, additional_name: str, reuse=False):
+        self.variable_scope_name = variable_scope_name
         full_name = variable_scope_name + '_' + additional_name
         with tf.name_scope(full_name) as scope:
-            self.image_input = image_input
-            self.score = self._build(image_input, text_embedding, variable_scope_name, reuse)
-            self.trainable_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=variable_scope_name)
-            # self.model_variables = tf.get_collection(tf.GraphKeys.MODEL_VARIABLES, scope=variable_scope_name)
+            # image_input = tf.identity(image_input)
+            self.image_input = tf.identity(image_input)
+            self.emb_input = tf.identity(text_embedding)  # FUUUUUUUUUUUUUCK!!!!!!!!!
+            self.score = self._build(self.image_input, self.emb_input, variable_scope_name, reuse)
+            self.trainable_variables = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=variable_scope_name)
+            if additional_name.find('gp') == -1:
+                tf.summary.scalar('score', tf.reduce_mean(self.score))
 
-            tf.summary.scalar('score', tf.reduce_mean(self.score))
-            # Only img will be summarized
-            if additional_name == 'real':
-                [tf.summary.histogram(var.name, var) for var in self.trainable_variables]
-                tf.summary.image('real_image', image_input, max_outputs=BATCH_SIZE)
-                tf.summary.histogram('real_image', image_input)
-
-            if additional_name == 'fake':
-                tf.summary.image('fake_image', image_input, max_outputs=BATCH_SIZE)
-                tf.summary.histogram('fake_image', image_input)
-
-            # self.merge = tf.summary.merge(tf.get_collection(tf.GraphKeys.SUMMARIES, scope=scope))
             self.summaries = tf.get_collection(tf.GraphKeys.SUMMARIES, scope=scope)
 
     def _build(self, image_input, text_embedding, variable_scope_name, reuse):
         base_channel = DISCRIMINATOR_HP['base_channel']
-        kernel_size = DISCRIMINATOR_HP['kernel_size']
-        stride = DISCRIMINATOR_HP['stride']
+        # kernel_size = DISCRIMINATOR_HP['kernel_size']
+        # stride = DISCRIMINATOR_HP['stride']
         activation_fn = DISCRIMINATOR_HP['activation_fn']
         normalizer_fn = DISCRIMINATOR_HP['normalizer_fn']
-        weights_initializer = DISCRIMINATOR_HP['weights_initializer']
-        biases_initializer = DISCRIMINATOR_HP['biases_initializer']
+        emb_reduced_dim = DISCRIMINATOR_HP['emb_reduced_dim']
+        # weights_initializer = DISCRIMINATOR_HP['weights_initializer']
+        # biases_initializer = DISCRIMINATOR_HP['biases_initializer']
 
         with tf.variable_scope(variable_scope_name, reuse=reuse):
-            # 64, 3/N_CLASS
-            net = ly.conv2d(image_input, base_channel, kernel_size, stride,
-                            activation_fn=activation_fn, normalizer_fn=None, scope='0_img_conv',
-                            weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 32, 64
-            net = ly.conv2d(net, base_channel * 2, kernel_size, stride,
-                            activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='1_img_conv',
-                            weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 16, 128
-            net = ly.conv2d(net, base_channel * 4, kernel_size, stride,
-                            activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='2_img_conv',
-                            weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 8, 256
-
-            net = ly.conv2d(net, base_channel * 8, kernel_size, stride,
-                            activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='3_img_conv',
-                            weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 4, 512
-
-            # Embedding: 4,256
-            reduced_emb = ly.fully_connected(text_embedding, 256, activation_fn=activation_fn, normalizer_fn=None,
-                                             weights_initializer=weights_initializer,
-                                             biases_initializer=biases_initializer, scope='emb_fc')
-            reduced_emb = tf.expand_dims(reduced_emb, 1)
-            reduced_emb = tf.expand_dims(reduced_emb, 2)
-            reduced_emb = tf.tile(reduced_emb, [1, 4, 4, 1])
+            encoded_pic = self.encode_pic(image_input, base_channel, normalizer_fn, activation_fn)
+            shape = encoded_pic.get_shape().as_list()
+            reduced_emb = self.wrap_emb(text_embedding, emb_reduced_dim, shape[1], activation_fn)
 
             # Concat
-            concat = tf.concat([net, reduced_emb], axis=3)
+            concat = tf.concat([encoded_pic, reduced_emb], axis=3)
 
-            # 4, 512+256
-            net = ly.conv2d(net, base_channel * 16, kernel_size, stride,
-                            activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope='4_concat_conv',
-                            weights_initializer=weights_initializer, biases_initializer=biases_initializer)
+            # ATTENTION: ly_index !
+            net = conv(concat, 8 * base_channel, 1, 1, normalizer_fn, activation_fn, 7)
 
-            # 2, 1024
-            reshape = tf.reshape(net, [BATCH_SIZE, 2 * 2 * 1024])
-            # 2*2*1024
-            score = ly.fully_connected(reshape, 1,
-                                       activation_fn=None, normalizer_fn=None, scope='5_fc',
-                                       weights_initializer=weights_initializer, biases_initializer=biases_initializer)
-            # 1
+            gi,ge = tf.gradients(net,[encoded_pic,reduced_emb])
+            # tf.summary.histogram('encoded_pic',encoded_pic)
+            # tf.summary.histogram('reduced_emb',reduced_emb)
+
+            tf.summary.scalar('grad_con_img_sclr',tf.reduce_mean(tf.sqrt(l2_norm_square(gi))))
+            tf.summary.histogram('grad_con_img_his',gi)
+            tf.summary.scalar('grad_con_emb_sclr',tf.reduce_mean(tf.sqrt(l2_norm_square(ge))))
+            tf.summary.histogram('grad_con_emb_his',ge)
+
+
+            # net = conv(net, 4 * base_channel, 2, 1, normalizer_fn, activation_fn, 8)
+            net = tf.reshape(net, [net.get_shape().as_list()[0], -1])
+            score = dense(net, 1, None, None, 9)
 
         return score  # (batch_size,1)
+
+    def encode_pic(self, image_input, base_channel, normalizer_fn, activation_fn):
+        # s, bc --> s16, 8*bc
+        # with tf.variable_scope('encode_pic'):
+        # s = 64
+        net_s2 = conv(image_input, base_channel, 4, 2, None, activation_fn, 0)
+        net_s4 = conv(net_s2, 2 * base_channel, 4, 2, normalizer_fn, activation_fn, 1)
+        net_s8 = conv(net_s4, 4 * base_channel, 4, 2, normalizer_fn, activation_fn, 2)
+        net_s16_0 = conv(net_s8, 8 * base_channel, 4, 2, normalizer_fn, activation_fn, 3)
+        net_s16 = conv(net_s16_0, 16 * base_channel, 1, 1, normalizer_fn, activation_fn, 4)
+        net_s16 = conv(net_s16, 8 * base_channel, 1, 1, normalizer_fn, activation_fn, 5)
+        net_s16 = conv(net_s16, 8 * base_channel, 3, 1, normalizer_fn, None, 6)
+        # residual
+        # net_s16 = activation_fn(net_s16 + net_s16_0)
+        net_s16 = activation_fn(net_s16)
+
+        return net_s16
+
+    def wrap_emb(self, emb, emb_reduced_dim, tile_size, activation_fn):
+        reduced_emb = dense(emb, emb_reduced_dim, None, activation_fn, '0_emb_fc')
+
+        # reduced_emb = tf.expand_dims(reduced_emb, 1)
+        # reduced_emb = tf.expand_dims(reduced_emb, 2)
+        # reduced_emb = tf.tile(tf.expand_dims(tf.expand_dims(reduced_emb, 1), 2), [1, tile_size, tile_size, 1],
+        #                       name='tile_emb')
+        # a = tf.expand_dims(reduced_emb, 1)
+        # a = tf.tile(a, [1, tile_size, 1])
+        # a = tf.expand_dims(a, 1)
+        # reduced_emb = tf.tile(a, [1, tile_size, 1, 1])
+        reduced_emb = tile(reduced_emb, [tile_size, tile_size])
+        return reduced_emb
+
 
 
 # TEST

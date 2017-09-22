@@ -3,10 +3,16 @@ config:
 CUDA_VISIBLE_DEVICES
 IS_DEBUG
 RESTORE_PATH
+IS_STACK_0, IS_STACK_1
+
+
+whole:
+the input of Generator!
 
 
 train:
 work_dir
+
 
 
 ----Change network structure----

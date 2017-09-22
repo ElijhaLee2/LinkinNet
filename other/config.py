@@ -1,50 +1,68 @@
-OPTIMIZER_SUMMARIES = [
-    "learning_rate",
-    "loss",
-    # "gradients",
-    # "gradient_norm",
-]
+from enum import Enum
 
-CUDA_VISIBLE_DEVICES = '9'
+CUDA_VISIBLE_DEVICES = '5'
+print('CUDA_VISIBLE_DEVICES: ', CUDA_VISIBLE_DEVICES)
 
-RESTORE_PATH = None
-# RESTORE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/work_dir/train08-03_10-40-44/'
+ALLOW_GROWTH = True
 
-# Path of MatchNet saved parameters
-# MATCHNET_IMG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/img/'
-# MATCHNET_SEG_SAVE_PATH = '/data/rui.wu/Elijha/workspace/Img_emb/params/seg/'
+WORK_DIR_NAME = 'stack_plus'
 
-# # Names
-# DISCRIMINATOR_IMG_NAME = 'dis_img'
-# DISCRIMINATOR_SEG_NAME = 'dis_seg'
-# GENERATOR_NAME = 'gen'
-# OPTIMIZER_GEN_NAME = 'optmzr_gen'
-# OPTIMIZER_DIS_IMG_NAME = 'optmzr_dis_img'
-# OPTIMIZER_DIS_SEG_NAME = 'optmzr_dis_seg'
+BATCH_SIZE = 48
+IMG_LENGTH = 64
 
+#
+SAVE_STEP = 100
+SAVE_STEP_EPOCH = 50
+TOTAL_EPOCH = 600
 
-BATCH_SIZE = 32
-IMG_SIZE = 64
+# MSCOCO class
+N_CAT = 90 + 1
+CAT_NMS = ['dog']
+CAT_NUMs = [18]
 
 # IS_DEBUG = True
 IS_DEBUG = False
+
+print('IS_DEBUG: ', IS_DEBUG)
+
 if not IS_DEBUG:
-    DISPLAY_STEP = 5
-    N_DIS = [20,10]
+    DISPLAY_STEP = 10
+    N_DIS = [30, 5]
 else:
     DISPLAY_STEP = 1
-    N_DIS = [3,1]
+    N_DIS = [1, 1]
 
-SAVE_STEP = 100
-SAVE_STEP_EPOCH = 5
-TOTAL_EPOCH = 20
+# IS_RESTORE = True
+IS_RESTORE = False
+print('IS_RESTORE: ', IS_RESTORE)
 
-# MSCOCO class
-N_CAT = 1
-CAT_NMS = ['cup']
-SUPCAT_NMS = []
-CLASS_NUM_LIST = [47]
+IS_STACK_0 = False
+IS_STACK_1 = True
+print('(%s, %s)' % (IS_STACK_0, IS_STACK_1))
 
 
-SEG_ADDED = True
-MATCHNET_ADDED = True
+# TB_GROUP = Enum('TB_GROUP',
+#                 ('G_params', 'D_params', 'G_grads', 'D_grads', 'scores', 'outputs', 'norms', 'w_dis', 'losses',
+#                  'gen_img'))
+
+
+class TB_GROUP:
+    G_params = 'G_params'
+    D_params = 'D_params'
+    G_grads = 'G_grads'
+    D_grads = 'D_grads'
+    scores = 'scores'
+    # outputs = 'outputs'
+    norms = 'norms'
+    w_dis = 'w_dis'
+    losses = 'losses'
+    # gen_img = 'gen_img'
+
+
+# SUM_COLLEC = Enum('SUM_COLLEC', ('G_sum', 'D_sum', 'Opt_G_sum', 'Opt_D_sum'))
+
+class SUM_COLLEC:
+    G_sum = 'G_sum'
+    D_sum = 'D_sum'
+    Opt_G_sum = 'Opt_G_sum'
+    Opt_D_sum = 'Opt_D_sum'

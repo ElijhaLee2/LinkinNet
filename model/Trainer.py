@@ -1,4 +1,5 @@
 import tensorflow as tf
+from other.config import SUM_COLLEC
 
 
 class Trainer:
@@ -13,7 +14,6 @@ class Trainer:
         opt = self.optmzrs[stack_to_train]['optmzr_gen']
         self.sess.run(opt.optmzr)
 
-
     def train_dis(self, stack_to_train):
         opt = self.optmzrs[stack_to_train]['optmzr_dis']
         self.sess.run(opt.optmzr)
@@ -22,20 +22,16 @@ class Trainer:
         fetch = self.merge
         res = self.sess.run(fetch)
         self.file_writer.add_summary(res, global_step)
+        print(global_step)
 
     def _merge_summaries(self):
-        merge = list()
-        for m in self.models['STACK_0'].values():
-            merge.append([m.summaries])
+        summaries = list()
+        for k in self.models.keys():
 
-        for m in self.models['STACK_0'].values():
-            merge.append([m.summaries])
+            for m in self.models[k].values():
+                summaries += m.summaries
 
-        for o in self.optmzrs['STACK_1'].values():
-            merge.append([o.summaries])
+            for o in self.optmzrs[k].values():
+                summaries += o.summaries
 
-        for o in self.optmzrs['STACK_1'].values():
-            merge.append([o.summaries])
-
-
-        return merge
+        return tf.summary.merge(summaries)
