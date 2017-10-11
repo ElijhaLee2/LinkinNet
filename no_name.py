@@ -1,16 +1,18 @@
-import time
-import tensorflow.contrib.layers as ly
 import tensorflow as tf
+import numpy as np
 
 
-ly.dropout
-tf.nn.dropout()
+def norm(tensor):
+    return tensor / tf.reduce_sum(tensor)
+    # return tensor / tensor
 
-t1 = time.time()
-time.sleep(2)
-t2 = time.time()
 
-t = t2-t1
-print(t)
+if __name__ == '__main__':
+    a = [1., 2., 3.]
+    a = np.array(a)
 
-tf.nn.conv2d()
+    t = tf.placeholder(tf.float32)
+    res = norm(t)
+
+    with tf.Session() as sess:
+        print(sess.run(res, {t: a}))
