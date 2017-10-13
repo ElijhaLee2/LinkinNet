@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/LinkinNet.iml" filepath="$PROJECT_DIR$/.idea/LinkinNet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../irgan-master/.idea/irgan-master.iml" filepath="$PROJECT_DIR$/../irgan-master/.idea/irgan-master.iml" />
     </modules>
   </component>
 </project>
