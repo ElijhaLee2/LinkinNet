@@ -7,16 +7,16 @@ from model_919.model_func import residual_block
 
 
 class Generator:
-    def __init__(self, embedding, name: str, seg=None, reuse=False):
+    def __init__(self, embedding, name: str, batch_size=BATCH_SIZE, seg=None, reuse=False):
         with tf.name_scope(name) as scope:
             self.embedding = tf.identity(embedding)
             if name.find('seg') != -1:
                 assert seg is None
-                self.generated_pic = self._build_0(self.embedding, name, reuse)
+                self.generated_pic = self._build_0(self.embedding, name, reuse, batch_size=batch_size)
             elif name.find('img') != -1:
                 assert type(seg) == tf.Tensor
                 self.seg = tf.identity(seg)
-                self.generated_pic = self._build_1(self.seg, self.embedding, name, reuse)
+                self.generated_pic = self._build_1(self.seg, self.embedding, name, reuse, batch_size=batch_size)
             else:
                 raise ValueError('Nether \'seg\' nor \'img\' is in \'name\' of Generator')
 
@@ -25,17 +25,17 @@ class Generator:
 
             self.summaries = tf.get_collection(tf.GraphKeys.SUMMARIES, scope=scope)
 
-    def _build_0(self, embedding, name, reuse):
+    def _build_0(self, embedding, name, reuse, batch_size=BATCH_SIZE):
         z_dim = GENERATOR_HP['z_dim']
         gf_dim = GENERATOR_HP['gf_dim']
         activation_fn = GENERATOR_HP['activation_fn']
         normalizer_fn = GENERATOR_HP['normalizer_fn']
 
         with tf.variable_scope(name, reuse=reuse) as scope:
-            z = tf.random_normal([BATCH_SIZE, z_dim])
+            z = tf.random_normal([batch_size, z_dim])
             input_ = tf.concat([z, embedding], axis=1)
             net = dense(input_, 4 * 4 * 8 * gf_dim, None, None, 0)
-            net = tf.reshape(net, [BATCH_SIZE, 4, 4, 8 * gf_dim])
+            net = tf.reshape(net, [batch_size, 4, 4, 8 * gf_dim])
             # 4,8*gf_dim
             net = residual_block(net, 4 * gf_dim, normalizer_fn, activation_fn, 1)
             # 4,8*gf_dim
@@ -48,7 +48,7 @@ class Generator:
             generated_img = self.decode_seg(net, gf_dim, normalizer_fn, activation_fn, 9)
         return generated_img
 
-    def _build_1(self, seg, emb, name, reuse):
+    def _build_1(self, seg, emb, name, reuse, batch_size=BATCH_SIZE):
         gf_dim = GENERATOR_HP['gf_dim']
         act_fn = GENERATOR_HP['act_fn']
         norm_fn = GENERATOR_HP['norm_fn']
@@ -56,10 +56,10 @@ class Generator:
 
         with tf.variable_scope(name, reuse=reuse) as scope:
             # emb
-            z = tf.random_normal([BATCH_SIZE, z_dim], name='z')
+            z = tf.random_normal([batch_size, z_dim], name='z')
             emb_z = tf.concat([emb, z], axis=-1, name='emb_z_concat')
             emb_net = dense(emb_z, 4 * 4 * 8 * gf_dim, None, None, 0)
-            emb_net = tf.reshape(emb_net, [BATCH_SIZE, 4, 4, 8 * gf_dim])
+            emb_net = tf.reshape(emb_net, [batch_size, 4, 4, 8 * gf_dim])
             # 4, 8*gf
             emb_net = residual_block(emb_net, 8 * gf_dim, norm_fn, act_fn, 1)
             emb_net = act_fn(emb_net)

@@ -8,7 +8,7 @@ CAP_PATH = "/home/elijha/Documents/Data/MSCOCO/annotations/captions_train2014.js
 INSTANCES_PATH = "/home/elijha/Documents/Data/MSCOCO/annotations/instances_train2014.json"
 SEG_PATH = "/home/elijha/Documents/Data/MSCOCO/train2014_seg"
 IMG_PATH = "//home/elijha/Documents/Data/MSCOCO/train2014"
-# HDF5_PATH = "/data/rui.wu/CZHH/Dataset_COCO/COCO_VSE_torch/COCO_vse_torch_train.hdf5"
+HDF5_PATH = "/home/elijha/Documents/Data/MSCOCO/COCO_vse_torch_train.hdf5"
 # PKL_PATH = "/data/rui.wu/Elijha/workspace/Img_emb/dog.pkl"
 
-VGG_MODEL_PATH = "/data/rui.wu/Elijha/workspace/PIS-master/VGG_Model/imagenet-vgg-verydeep-19.mat"
+# VGG_MODEL_PATH = "/data/rui.wu/Elijha/workspace/PIS-master/VGG_Model/imagenet-vgg-verydeep-19.mat"
