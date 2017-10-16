@@ -12,11 +12,11 @@ import skimage.io as io
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = CUDA_VISIBLE_DEVICES
 
-restore_path = ''
+restore_path = "/home/elijha/PycharmProjects/LinkinNet/LinkinNet-params/0919"
 out_path = os.path.join('.', 'test_res', time.strftime("%m-%d_%H-%M-%S"))
 if not os.path.isdir(out_path):
     os.makedirs(out_path)
-sample_total_num = 20
+sample_total_num = 30
 
 
 def preprocess(seg, length: int):
@@ -70,8 +70,8 @@ seg_ph_ = preprocess(seg_ph, IMG_LENGTH)
 gen = Generator.Generator(emb_ph, 'gen_img', batch_size=1, seg=seg_ph_, reuse=False)
 
 # saver
-# saver = tf.train.Saver()
-# cp = tf.train.latest_checkpoint(restore_path)
+saver = tf.train.Saver()
+cp = tf.train.latest_checkpoint(restore_path)
 
 # coco
 coco = COCO(INSTANCES_PATH)
@@ -87,8 +87,8 @@ img_list = os.listdir(IMG_PATH)
 f = open(os.path.join(out_path, 'caps.txt'), 'w')
 # Session restore & run
 sess = tf.InteractiveSession()
-# saver.restore(sess, cp)
-tf.global_variables_initializer().run()
+saver.restore(sess, cp)
+# tf.global_variables_initializer().run()
 
 # Start sample
 for i in range(sample_total_num):
@@ -121,7 +121,8 @@ for i in range(sample_total_num):
     fake_img = sess.run(gen.generated_pic, feed_dict=feed)
 
     # Save results
-    io.imsave(os.path.join(out_path, str(i) + '.jpg'), fake_img[0] * 255)
+    io.imsave(os.path.join(out_path, str(i) + '.jpg'), np.uint8(fake_img[0] * 255))
+    # io.imsave(os.path.join(out_path, str(i) + '.jpg'), fake_img[0] * 2 - 1)
     f.writelines(str(i) + '. ' + cap + '\n')
 
 # Finish
