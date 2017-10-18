@@ -1,6 +1,6 @@
 from enum import Enum
 
-CUDA_VISIBLE_DEVICES = '5'
+CUDA_VISIBLE_DEVICES = '4'
 print('CUDA_VISIBLE_DEVICES: ', CUDA_VISIBLE_DEVICES)
 
 ALLOW_GROWTH = True
@@ -12,15 +12,14 @@ IMG_LENGTH = 64
 
 #
 SAVE_STEP = 100
-SAVE_STEP_EPOCH = 50
-TOTAL_EPOCH = 600
+SAVE_STEP_EPOCH = 5
+TOTAL_EPOCH = 2000
 
 # MSCOCO class
 N_CAT = 90 + 1
 CAT_NMS = ['dog']
 CAT_NUMs = [18]
 
-# IS_DEBUG = True
 IS_DEBUG = False
 
 print('IS_DEBUG: ', IS_DEBUG)
@@ -32,9 +31,8 @@ else:
     DISPLAY_STEP = 1
     N_DIS = [1, 1]
 
-# IS_RESTORE = True
-IS_RESTORE = False
-print('IS_RESTORE: ', IS_RESTORE)
+RESTORE_MODE = 1
+print('RESTORE_MODE: ', RESTORE_MODE)
 
 IS_STACK_0 = False
 IS_STACK_1 = True

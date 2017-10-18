@@ -1,4 +1,5 @@
-# import tensorflow as tf
+import tensorflow.contrib.layers as ly
+import tensorflow as tf
 # import numpy as np
 #
 #
@@ -16,3 +17,9 @@
 #
 #     with tf.Session() as sess:
 #         print(sess.run(res, {t: a}))
+
+ly.batch_norm
+a = tf.train.ExponentialMovingAverage()
+a.apply()
+
+# tf.Graph.get_tensor_by_name()

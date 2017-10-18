@@ -47,7 +47,7 @@ def get_input_tensors(image_root=IMG_PATH, seg_root=SEG_PATH,
     seg_path_queue_w = tf.train.string_input_producer(seg_path_list_w, shuffle=False, capacity=batch_size * 4,
                                                       name='seg_path_queue_w')
 
-    # TODO asdadasdasd
+
     _, img = tf.WholeFileReader().read(img_path_queue)
     _, img_w = tf.WholeFileReader().read(img_path_queue_w)
     _, seg = tf.WholeFileReader().read(seg_path_queue)

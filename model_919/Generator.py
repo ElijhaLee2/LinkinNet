@@ -52,43 +52,44 @@ class Generator:
         gf_dim = GENERATOR_HP['gf_dim']
         act_fn = GENERATOR_HP['act_fn']
         norm_fn = GENERATOR_HP['norm_fn']
+        norm_param = GENERATOR_HP['norm_params']
         z_dim = GENERATOR_HP['z_dim']
 
         with tf.variable_scope(name, reuse=reuse) as scope:
             # emb
             z = tf.random_normal([batch_size, z_dim], name='z')
             emb_z = tf.concat([emb, z], axis=-1, name='emb_z_concat')
-            emb_net = dense(emb_z, 4 * 4 * 8 * gf_dim, None, None, 0)
+            emb_net = dense(emb_z, 4 * 4 * 8 * gf_dim, None, None, None, 0)
             emb_net = tf.reshape(emb_net, [batch_size, 4, 4, 8 * gf_dim])
             # 4, 8*gf
-            emb_net = residual_block(emb_net, 8 * gf_dim, norm_fn, act_fn, 1)
+            emb_net = residual_block(emb_net, 8 * gf_dim, norm_fn, norm_param, act_fn, 1)
             emb_net = act_fn(emb_net)
             # 4, 8*gf
 
             # seg
-            net1, net2, net4, net8, net16 = self.encode_seg(self.seg, gf_dim, norm_fn, act_fn, 0)
+            net1, net2, net4, net8, net16 = self.encode_seg(self.seg, gf_dim, norm_fn, norm_param, act_fn, 0)
 
             # concat
             net = tf.concat([emb_net, net16], axis=-1)
             # 4,16*gf
-            net = conv(net, 8 * gf_dim, 3, 1, norm_fn, None, 4)
+            net = conv(net, 8 * gf_dim, 3, 1, norm_fn, norm_param, None, 4)
             # 4, 8*gf
-            net = residual_block(net, 8 * gf_dim, norm_fn, act_fn, 5)
-            net = residual_block(net, 8 * gf_dim, norm_fn, act_fn, 8)
-            net = residual_block(net, 8 * gf_dim, norm_fn, act_fn, 11)
+            net = residual_block(net, 8 * gf_dim, norm_fn, norm_param, act_fn, 5)
+            net = residual_block(net, 8 * gf_dim, norm_fn, norm_param, act_fn, 8)
+            net = residual_block(net, 8 * gf_dim, norm_fn, norm_param, act_fn, 11)
             net = act_fn(net)
 
             # decode
             # 4,8*gf
-            net = upsample_conv_with_concat(net, net8, 4 * gf_dim, 4, 1, norm_fn, act_fn, 14)
+            net = upsample_conv_with_concat(net, net8, 4 * gf_dim, 4, 1, norm_fn, norm_param, act_fn, 14)
             # 8,4*gf
-            net = upsample_conv_with_concat(net, net4, 2 * gf_dim, 4, 1, norm_fn, act_fn, 15)
+            net = upsample_conv_with_concat(net, net4, 2 * gf_dim, 4, 1, norm_fn, norm_param, act_fn, 15)
             # 16,2*gf
-            net = upsample_conv_with_concat(net, net2, gf_dim, 4, 1, norm_fn, act_fn, 16)
+            net = upsample_conv_with_concat(net, net2, gf_dim, 4, 1, norm_fn, norm_param, act_fn, 16)
             # 32,gf
-            net = upsample_conv_with_concat(net, net1, gf_dim / 2, 4, 1, norm_fn, act_fn, 17)
+            net = upsample_conv_with_concat(net, net1, gf_dim / 2, 4, 1, norm_fn, norm_param, act_fn, 17)
             # 64,gf/2
-            net = conv(net, 3, 4, 1, None, tf.tanh, 18)
+            net = conv(net, 3, 4, 1, None, None, tf.tanh, 18)
 
             generated_img = net / 2 + 0.5
 
@@ -117,18 +118,18 @@ class Generator:
     #     res = conv(concat, c // 2, 3, 1, norm_fn, None, ly_index)
     #     return res
 
-    def encode_seg(self, image_input, gf_dim, norm_fn, act_fn, start_index):
+    def encode_seg(self, image_input, gf_dim, norm_fn, norm_param, act_fn, start_index):
         # 4 layers
         with tf.variable_scope('encode_seg'):
             net = image_input
             # 64,3*3
-            net2 = conv(net, gf_dim, 5, 2, None, act_fn, start_index)
+            net2 = conv(net, gf_dim, 5, 2, None, norm_param, act_fn, start_index)
             # 32,df
-            net4 = conv(net2, gf_dim * 2, 4, 2, norm_fn, act_fn, start_index + 1)
+            net4 = conv(net2, gf_dim * 2, 4, 2, norm_fn, norm_param, act_fn, start_index + 1)
             # 16,2*df
-            net8 = conv(net4, gf_dim * 4, 4, 2, norm_fn, act_fn, start_index + 2)
+            net8 = conv(net4, gf_dim * 4, 4, 2, norm_fn, norm_param, act_fn, start_index + 2)
             # 8,4*df
-            net16 = conv(net8, gf_dim * 8, 3, 2, norm_fn, act_fn, start_index + 3)
+            net16 = conv(net8, gf_dim * 8, 3, 2, norm_fn, norm_param, act_fn, start_index + 3)
             # 4,8*df
         return net, net2, net4, net8, net16
 

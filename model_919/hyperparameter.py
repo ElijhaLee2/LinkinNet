@@ -24,6 +24,8 @@ GENERATOR_HP = {'z_dim': 128,
                 # 'stride': 2,
                 'act_fn': tf.nn.relu,
                 'norm_fn': ly.batch_norm,
+                'norm_params': {'is_training': True, 'updates_collections': None},
+
                 # 'normalizer_fn': None,
                 # 'weights_initializer': tf.truncated_normal_initializer(stddev=0.01)
                 }
@@ -35,5 +37,6 @@ DISCRIMINATOR_HP = {'df_dim': 64,
                     # 'stride': 2,
                     'act_fn': leaky_relu,
                     'norm_fn': None,
+                    'norm_params': None
                     # 'weights_initializer': tf.truncated_normal_initializer(stddev=0.01),
                     }

@@ -38,7 +38,7 @@ def backup_model_file(backup_dir):
     # shutil.copy('./other/config.py', os.path.join(backup_dir, 'other', 'config.py'))
     # shutil.copy('./train.py', os.path.join(backup_dir, 'train.py'))
     for dir_name in os.listdir('.'):
-        if dir_name in ['params', 'preprocess', 'tests', 'useless', '__pycache__', 'work_dir', 'liwei']:
+        if dir_name in ['params', 'preprocess', 'tests', 'useless', '__pycache__', 'work_dir', 'liwei','test_res']:
             continue
 
         dir_absolute = os.path.join('.', dir_name)

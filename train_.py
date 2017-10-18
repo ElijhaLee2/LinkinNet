@@ -1,13 +1,13 @@
 import tensorflow as tf
 from model_919.Trainer import Trainer
 from data_input.input_pipeline import get_input_tensors
-from other.config import SAVE_STEP, TOTAL_EPOCH, CUDA_VISIBLE_DEVICES, RESTORE_MODE, \
+from other.config import SAVE_STEP, TOTAL_EPOCH, CUDA_VISIBLE_DEVICES, IS_RESTORE, \
     N_DIS, SAVE_STEP_EPOCH, DISPLAY_STEP, IS_STACK_0, IS_STACK_1, WORK_DIR_NAME, BATCH_SIZE, ALLOW_GROWTH
 from other.function import backup_model_file, remain_time
 import os
 import sys
 import time
-from model_919.whole import build_whole_graph
+from whole import build_whole_graph
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = CUDA_VISIBLE_DEVICES
 
@@ -17,19 +17,13 @@ batch, length = get_input_tensors()
 # Build network, Create optimizer
 models, optmzrs = build_whole_graph(batch)
 
-# Monitor moving average
-graph = tf.get_default_graph()
-vv = graph.get_tensor_by_name('gen_img/1_conv/BatchNorm/moving_mean:0')
-tf.summary.scalar('vv', tf.reduce_mean(vv), collections='LinkNet_sum')
-
 # Create session
 sess_config = tf.ConfigProto()
 sess_config.gpu_options.allow_growth = ALLOW_GROWTH
 sess = tf.InteractiveSession(config=sess_config)
 
 # Prepare directories
-
-if RESTORE_MODE == 2:
+if not IS_RESTORE:  # TODO
     log_dir = os.path.join('..', 'log')
     save_path = os.path.join('..', 'save')
     save_epoch_path = os.path.join('..', 'save', 'epoch')
@@ -55,7 +49,7 @@ saver_gan = tf.train.Saver()
 saver_gan_epoch = tf.train.Saver()
 
 # Initialization or restore
-if RESTORE_MODE == 0:
+if not IS_RESTORE:
     tf.global_variables_initializer().run()
     # Count
     global_step = 1
@@ -63,8 +57,9 @@ if RESTORE_MODE == 0:
     epoch_total = TOTAL_EPOCH
 else:
     tf.global_variables_initializer().run()
-    restore_path = os.path.join(sys.path[0], '../save') if RESTORE_MODE == 2 \
-        else '/home/elijha/PycharmProjects/LinkinNet/LinkinNet-params/0919'
+    # cp = tf.train.latest_checkpoint(os.path.join(sys.path[0], '../save'))
+    # TODO
+    restore_path = "/home/elijha/PycharmProjects/LinkinNet/LinkinNet-params/0919"
     cp = tf.train.latest_checkpoint(restore_path)
     y_or_n = input('Restore from: %s, true? (\'y\' for yes, others for no.)' % cp)
     assert (y_or_n == 'y' or y_or_n == 'Y'), 'Not \'y\' or \'Y\', exit.'
@@ -89,38 +84,17 @@ trainer = Trainer(sess, models, optmzrs, file_writer)
 print('Run------Time: %s--------------\n\nStart from epoch: %d' % (time.strftime('%Y-%m-%d_%H-%M-%S'), epoch_done))
 try:
     while epoch_done < epoch_total:
-        save_flag = (global_step % SAVE_STEP == 0)
         display_flag = (global_step % DISPLAY_STEP == 0) or (global_step < 30)
-        n_dis = N_DIS[0 if global_step < 30 else 1]
+
         # tic
         time_start = time.time()
-        # train dis
-        for i in range(n_dis):
-            if IS_STACK_0:
-                trainer.train_dis('STACK_0')
-            if IS_STACK_1:
-                trainer.train_dis('STACK_1')
 
-        # train gen
-        if IS_STACK_0:
-            trainer.train_gen('STACK_0')
-        if IS_STACK_1:
-            trainer.train_gen('STACK_1')
         time_inter = time.time() - time_start  # in second
 
         # display
         if display_flag:
             time_remain = remain_time(time_inter, TOTAL_EPOCH, length, BATCH_SIZE, global_step, N_DIS)
             trainer.display(global_step, TOTAL_EPOCH * length / BATCH_SIZE, time_inter, time_remain)
-
-        if save_flag:
-            saver_gan.save(sess, os.path.join(save_path, 'save'), global_step, write_meta_graph=False)
-
-        if global_step * BATCH_SIZE - epoch_done * length >= length:
-            epoch_done += 1
-            if epoch_done % SAVE_STEP_EPOCH == 0:
-                saver_gan_epoch.save(sess, os.path.join(save_epoch_path, 'save_epoch'), epoch_done,
-                                     write_meta_graph=False)
 
         global_step += 1
 

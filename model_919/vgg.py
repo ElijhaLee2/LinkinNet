@@ -54,9 +54,9 @@ class VGG:
             return tf.nn.avg_pool(nin, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     def get_weight_bias(self, vgg_layers, i):
-        weights = vgg_layers[i][0][0][0][0][0]
+        weights = vgg_layers[i][0][0][2][0][0]
         weights = tf.constant(weights)
-        bias = vgg_layers[i][0][0][0][0][1]
+        bias = vgg_layers[i][0][0][2][0][1]
         bias = tf.constant(np.reshape(bias, bias.size))
         return weights, bias
 

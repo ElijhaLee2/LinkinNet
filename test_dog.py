@@ -22,7 +22,7 @@ restore_path = "/home/elijha/PycharmProjects/LinkinNet/LinkinNet-params/0919"
 out_path = os.path.join('.', 'test_res', time.strftime("%m-%d_%H-%M-%S"))
 if not os.path.isdir(out_path):
     os.makedirs(out_path)
-sample_total_num = 30
+sample_total_num = 100
 
 # placeholders
 emb_ph = tf.placeholder(tf.float32, [1, 1024], 'emb_ph')

@@ -8,42 +8,51 @@ from other.config import TB_GROUP, SUM_COLLEC
 WEIGHT_INITIALIZER = tf.truncated_normal_initializer(stddev=0.01)
 
 
-def conv(inputs, channel, kernel_size, stride, normalizer_fn, activation_fn, ly_index, padding='SAME'):
+def conv(inputs, channel, kernel_size, stride, normalizer_fn, normalizer_params, activation_fn, ly_index,
+         padding='SAME'):
     return ly.conv2d(inputs, channel, kernel_size, stride,
-                     activation_fn=activation_fn, normalizer_fn=normalizer_fn, scope=str(ly_index) + '_conv',
-                     weights_initializer=WEIGHT_INITIALIZER,padding=padding)
+                     activation_fn=activation_fn, normalizer_fn=normalizer_fn, normalizer_params=normalizer_params,
+                     scope=str(ly_index) + '_conv',
+                     weights_initializer=WEIGHT_INITIALIZER, padding=padding)
 
 
-def deconv(inputs, channel, kernel_size, stride, normalizer_fn, activation_fn, ly_index):
+def deconv(inputs, channel, kernel_size, stride, normalizer_fn, normalizer_params, activation_fn, ly_index):
     return ly.conv2d_transpose(inputs, channel, kernel_size, stride,
                                activation_fn=activation_fn, normalizer_fn=normalizer_fn,
+                               normalizer_params=normalizer_params,
                                weights_initializer=WEIGHT_INITIALIZER, scope=str(ly_index) + '_deconv')
 
 
-def deconv_with_concat(inputs, to_concat, channel, kernel_size, stride, normalizer_fn, activation_fn, ly_index):
+def deconv_with_concat(inputs, to_concat, channel, kernel_size, stride, normalizer_fn, normalizer_params, activation_fn,
+                       ly_index):
     concat = tf.concat([inputs, to_concat], axis=3)
     return ly.conv2d_transpose(concat, channel, kernel_size, stride,
                                activation_fn=activation_fn, normalizer_fn=normalizer_fn,
+                               normalizer_params=normalizer_params,
                                weights_initializer=WEIGHT_INITIALIZER, scope=str(ly_index) + '_deconv_concat')
 
 
-def dense(inputs, out_num, normalizer_fn, activation_fn, ly_index):
+def dense(inputs, out_num, normalizer_fn, normalizer_params, activation_fn, ly_index):
     return ly.fully_connected(inputs, out_num, activation_fn=activation_fn, normalizer_fn=normalizer_fn,
+                              normalizer_params=normalizer_params,
                               weights_initializer=WEIGHT_INITIALIZER, scope=str(ly_index) + '_fc')
 
 
-def upsample_conv(inputs, channel, kernel_size, stride, normalizer_fn, activation_fn, ly_index):
+def upsample_conv(inputs, channel, kernel_size, stride, normalizer_fn, normalizer_params, activation_fn, ly_index):
     shape = inputs.get_shape().as_list()
     upsampled = tf.image.resize_bilinear(inputs, [2 * shape[1], 2 * shape[2]], name=str(ly_index) + '_resize')
-    res = conv(upsampled, channel, kernel_size, stride, normalizer_fn, activation_fn, str(ly_index) + '_up_conv')
+    res = conv(upsampled, channel, kernel_size, stride, normalizer_fn, normalizer_params, activation_fn,
+               str(ly_index) + '_up_conv')
     return res
 
 
-def upsample_conv_with_concat(inputs, to_concat, channel, kernel_size, stride, normalizer_fn, activation_fn, ly_index):
+def upsample_conv_with_concat(inputs, to_concat, channel, kernel_size, stride, normalizer_fn, normalizer_params,
+                              activation_fn, ly_index):
     shape = inputs.get_shape().as_list()
     upsampled = tf.image.resize_bilinear(inputs, [2 * shape[1], 2 * shape[2]], name=str(ly_index) + '_resize')
     concat = tf.concat([upsampled, to_concat], axis=3)
-    res = conv(concat, channel, kernel_size, stride, normalizer_fn, activation_fn, str(ly_index) + '_up_conv_concat')
+    res = conv(concat, channel, kernel_size, stride, normalizer_fn, normalizer_params, activation_fn,
+               str(ly_index) + '_up_conv_concat')
     return res
 
 
