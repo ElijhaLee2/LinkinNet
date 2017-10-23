@@ -51,17 +51,17 @@ class COCOeval:
     #  recall     - [TxKxAxM] max recall for every evaluation setting
     # Note: precision and recall==-1 for settings with no gt objects.
     #
-    # See also coco_data_record, mask, pycocoDemo, pycocoEvalDemo
+    # See also coco, mask, pycocoDemo, pycocoEvalDemo
     #
     # Microsoft COCO Toolbox.      version 2.0
     # Data, paper, and tutorials available at:  http://mscoco.org/
     # Code written by Piotr Dollar and Tsung-Yi Lin, 2015.
-    # Licensed under the Simplified BSD License [see coco_data_record/license.txt]
+    # Licensed under the Simplified BSD License [see coco/license.txt]
     def __init__(self, cocoGt=None, cocoDt=None, iouType='segm'):
         '''
-        Initialize CocoEval using coco_data_record APIs for gt and dt
-        :param cocoGt: coco_data_record object with ground truth annotations
-        :param cocoDt: coco_data_record object with detection results
+        Initialize CocoEval using coco APIs for gt and dt
+        :param cocoGt: coco object with ground truth annotations
+        :param cocoDt: coco object with detection results
         :return: None
         '''
         if not iouType:
@@ -492,7 +492,7 @@ class COCOeval:
 
 class Params:
     '''
-    Params for coco_data_record evaluation api
+    Params for coco evaluation api
     '''
     def setDetParams(self):
         self.imgIds = []
