@@ -2,7 +2,7 @@ import tensorflow as tf
 
 from model_919.hyperparameter import GENERATOR_HP
 from other.config import BATCH_SIZE, N_CAT
-from other.nn_func import conv, upsample_conv_with_concat, upsample_conv, dense, deconv
+from other.nn_func import conv, upsample_conv_with_concat, dense
 from model_919.model_func import residual_block
 
 
